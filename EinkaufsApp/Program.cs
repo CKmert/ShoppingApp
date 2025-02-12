@@ -16,7 +16,9 @@ namespace EinkaufsApp
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new LoadingScreen());
+           // Application.Run(new LoadingScreen());
+           //Beim Laden der Anwendung soll MainMenuScree geladen werden
+            Application.Run(new MainMenuScreen());  
         }
     }
 }

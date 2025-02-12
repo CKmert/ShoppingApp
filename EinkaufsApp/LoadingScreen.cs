@@ -14,7 +14,7 @@ namespace EinkaufsApp
     {
         private int loadingBarValue; // Variable für den Value der LoadingBar = Timervalue
 
-        public LoadingScreen()  // Konstuktor 
+        public LoadingScreen()  // Konstuktor Klasse
         {
             InitializeComponent();
         }
@@ -34,9 +34,18 @@ namespace EinkaufsApp
             if (loadingBarValue >= LoadingProgressbar.Maximum) // Wenn der Wert 100 (Maximum der Bar) erreicht ist stoppe den Timer
             {
                 LoadingbarTimer.Stop();
-            }
 
-            LoadingProgressbar.Value = loadingBarValue; // Value nimmt den Wert von loadingBarValue an 
+
+                LoadingProgressbar.Value = loadingBarValue; // Value nimmt den Wert von loadingBarValue an 
+                                                            // Laden beenden und MainMenuScreen öffnen
+
+                // Neues Objekt erstellen da MainMenuScreen eine Klasse der Oberklasse Forms ist
+                // Neues Objekt sorgt dafür dass wir mit MainMenuscreen arbeiten können
+                MainMenuScreen mainMenuScreen = new MainMenuScreen();
+                mainMenuScreen.Show(); // Anzeigen
+
+                this.Hide(); // this bezieht sich auf LoadingScreen da wir uns in dieser Klasse befinden
+            }
         }
 
         
