@@ -202,15 +202,19 @@
             this.productsDGV.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
             this.productsDGV.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.productsDGV.Location = new System.Drawing.Point(18, 190);
+            this.productsDGV.MultiSelect = false;
             this.productsDGV.Name = "productsDGV";
+            this.productsDGV.ReadOnly = true;
             this.productsDGV.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
             this.productsDGV.RowHeadersVisible = false;
             this.productsDGV.RowTemplate.DefaultCellStyle.BackColor = System.Drawing.Color.WhiteSmoke;
             this.productsDGV.RowTemplate.DefaultCellStyle.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.productsDGV.RowTemplate.DefaultCellStyle.ForeColor = System.Drawing.Color.Black;
             this.productsDGV.RowTemplate.DefaultCellStyle.SelectionBackColor = System.Drawing.Color.DimGray;
+            this.productsDGV.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.productsDGV.Size = new System.Drawing.Size(769, 259);
             this.productsDGV.TabIndex = 13;
+            this.productsDGV.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.productsDGV_CellContentClick);
             // 
             // ProductsScreen
             // 

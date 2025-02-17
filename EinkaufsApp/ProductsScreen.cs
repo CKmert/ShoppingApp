@@ -15,10 +15,11 @@ namespace EinkaufsApp
 {
     public partial class ProductsScreen : Form
     {
-        // Connection String - Verbindung zur Datenbank aufbauen (Verbindungszeichenfolge)
-
+        // Connection String - Verbindung zur Datenbank aufbauen (Verbindungszeichenfolge
         private SqlConnection databaseConnection = new SqlConnection(@"Data Source = (LocalDB)\MSSQLLocalDB; AttachDbFilename=C:\Users\onepi\OneDrive\Dokumente\EinkaufsApp.mdf;Integrated Security = True; Connect Timeout = 30");
 
+        // Product Key vom Element was als letztes ausgewählt wurde
+        private int lastSelectedProductKey;
 
         public ProductsScreen() //Konstuktor zum initialsieren aller Methoden 
         {
@@ -53,12 +54,9 @@ namespace EinkaufsApp
             string productPrice = textBoxProductPrice.Text;
 
             // Eingabe in Datenbank Objekt umwandeln 
-            databaseConnection.Open();
+            // Query mit dem Format wird an Methode Execute query übergeben und ausgeführt
             string query = string.Format("insert into Products values('{0}','{1}','{2}','{3}')", productName, productBrand, productCategory, productPrice);
-            SqlCommand sqlCommand = new SqlCommand(query, databaseConnection);  // Was soll ausgeführt werden, wo ?
-            sqlCommand.ExecuteNonQuery();
-            databaseConnection.Close();
-
+            ExecuteQuery(query);
 
             // Felder leeren
             ClearAllFields();
@@ -67,14 +65,25 @@ namespace EinkaufsApp
             ShowProducts();
         }
 
+
+        // Methode zum Bearbeiten eines Datenbank-Objektes
         private void btnProductEdit_Click(object sender, EventArgs e)
         {
 
+            if (lastSelectedProductKey == 0)
+            {
+                MessageBox.Show("Bitte wähle zuerst ein Produkt aus.");
+                return; // Brich Code ab
+            }
 
+            string productName = textBoxProductName.Text;  
+            string productBrand = textBoxProductBrand.Text;
+            string productCategory = comboBoxProductCategory.Text;
+            string productPrice = textBoxProductPrice.Text;
 
-
-            //Felder leeren
-            ClearAllFields();
+            string query = string.Format("update Products set Name='{0}', Brand = '{1}', Category = '{2}', Price = '{3}' where Id={4}"
+                , productName, productBrand, productCategory, productPrice, lastSelectedProductKey);
+            ExecuteQuery(query);
 
             // Aktualisierte Datenbank
             ShowProducts();
@@ -89,9 +98,36 @@ namespace EinkaufsApp
 
         private void btnProductDelete_Click(object sender, EventArgs e)
         {
+            // Wenn kein Element ausgewählt also lastSelectedPK == 0 
+            if (lastSelectedProductKey == 0)
+            {
+                MessageBox.Show("Bitte wähle zuerst ein Produkt aus.");
+                return; // Brich Code ab
+            }
+
+
+
+            // Query zum Löschen eines Datenbankobjektes anhand der ID
+            string query = string.Format("delete from Products where Id={0}; ", lastSelectedProductKey);
+            ExecuteQuery(query);
+
+            // Felder des gelöschten Objektes leeren 
+            ClearAllFields();
 
             // Aktualisierte Datenbank
             ShowProducts();
+            
+        }
+
+        private void ExecuteQuery(string query)
+        {
+            // Eingabe in Datenbank Objekt umwandeln 
+            databaseConnection.Open();
+           
+            SqlCommand sqlCommand = new SqlCommand(query, databaseConnection);  // Was soll ausgeführt werden, wo ?
+            sqlCommand.ExecuteNonQuery();
+            databaseConnection.Close();
+
         }
 
         // Methode zum Zeigen der Produkte:
@@ -126,6 +162,21 @@ namespace EinkaufsApp
             textBoxProductPrice.Text = "";
             comboBoxProductCategory.SelectedIndex = 0;
             comboBoxProductCategory.SelectedItem = null;
+        }
+
+
+        // Durch CellContent Click Event kann genau auf das zu löschende Element geklickt werden
+        private void productsDGV_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            // SelectedRows ist die Zeile die ausgewählt wird [0], Zelle [1] = Name, VALUE = Wert und konvertieren 
+            textBoxProductName.Text = productsDGV.SelectedRows[0].Cells[1].Value.ToString();
+            textBoxProductBrand.Text = productsDGV.SelectedRows[0].Cells[2].Value.ToString();
+            comboBoxProductCategory.Text = productsDGV.SelectedRows[0].Cells[3].Value.ToString();
+            textBoxProductPrice.Text = productsDGV.SelectedRows[0].Cells[4].Value.ToString();
+
+            // ID der zu löschenden Elements
+            lastSelectedProductKey = (int)productsDGV.SelectedRows[0].Cells[0].Value;
+
         }
     }
 }
